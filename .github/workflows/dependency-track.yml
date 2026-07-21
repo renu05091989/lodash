@@ -13,7 +13,7 @@ jobs:
       - name: Generate SBOM
         shell: powershell
         run: |
-          cyclonedx-npm --output-file bom.json
+           npx @cyclonedx/cyclonedx-npm --output-file bom.json
 
       - name: Check generated files
         shell: powershell
