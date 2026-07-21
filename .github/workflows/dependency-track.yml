@@ -1,5 +1,4 @@
 name: Dependency-Track SBOM
-
 on:
   push:
     branches:
@@ -30,7 +29,7 @@ jobs:
 
       - name: Upload SBOM to Dependency-Track
         run: |
-          curl -X POST "${{ secrets.DTRACK_URL }}/api/v1/bom" \
-            -H "X-Api-Key: ${{ secrets.DTRACK_API_KEY }}" \
-            -F "project=${{ secrets.DTRACK_PROJECT_UUID }}" \
+          curl.exe -X POST "${{ secrets.DTRACK_URL }}/api/v1/bom" `
+            -H "X-Api-Key: ${{ secrets.DTRACK_API_KEY }}" `
+            -F "project=${{ secrets.DTRACK_PROJECT_UUID }}" `
             -F "bom=@bom.json"
