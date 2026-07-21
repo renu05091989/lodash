@@ -27,9 +27,15 @@ jobs:
       - name: Generate SBOM
         run: cyclonedx-npm --output-file bom.json
 
+      - name: Check SBOM file exists
+        run: |
+          Get-ChildItem
+
       - name: Upload SBOM to Dependency-Track
         run: |
-          curl.exe -X POST "${{ secrets.DTRACK_URL }}/api/v1/bom" `
+         $response = curl.exe `
+             -X POST "${{ secrets.DTRACK_URL }}/api/v1/bom" `
             -H "X-Api-Key: ${{ secrets.DTRACK_API_KEY }}" `
             -F "project=${{ secrets.DTRACK_PROJECT_UUID }}" `
             -F "bom=@bom.json"
+          Write-Host $response
