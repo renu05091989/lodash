@@ -21,12 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Show SBOM component count
-        shell: powershell
-        run: |
-          $bom = Get-Content bom.json | ConvertFrom-Json
-          Write-Host "Components: $($bom.components.Count)"
-
       - name: Install CycloneDX Generator
         run: npm install -g @cyclonedx/cyclonedx-npm
 
