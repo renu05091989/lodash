@@ -10,32 +10,32 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Generate SBOM
-        shell: powershell
-        run: |
-           npx @cyclonedx/cyclonedx-npm --output-file bom.json
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Check generated files
-        shell: powershell
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install CycloneDX Generator
+        run: npm install -g @cyclonedx/cyclonedx-npm
+
+      - name: Generate SBOM
+        run: cyclonedx-npm --output-file bom.json
+
+      - name: Check SBOM file exists
         run: |
           Get-ChildItem
 
-      - name: Show SBOM component count
-        shell: powershell
-        run: |
-          $bom = Get-Content bom.json | ConvertFrom-Json
-          Write-Host "SBOM Version: $($bom.specVersion)"
-          Write-Host "Project Name: $($bom.metadata.component.name)"
-          Write-Host "Component Count: $($bom.components.Count)"
-
       - name: Upload SBOM to Dependency-Track
-        shell: powershell
         run: |
-          $response = curl.exe `
-            -X POST "${{ secrets.DTRACK_URL }}/api/v1/bom" `
+         $response = curl.exe `
+             -X POST "${{ secrets.DTRACK_URL }}/api/v1/bom" `
             -H "X-Api-Key: ${{ secrets.DTRACK_API_KEY }}" `
             -F "project=${{ secrets.DTRACK_PROJECT_UUID }}" `
             -F "bom=@bom.json"
-
-          Write-Host "Dependency-Track Response:"
           Write-Host $response
